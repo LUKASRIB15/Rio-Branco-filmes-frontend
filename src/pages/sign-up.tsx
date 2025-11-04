@@ -1,5 +1,4 @@
 import { SignupForm } from "@/components/signup-form";
-import { GalleryVerticalEnd } from "lucide-react";
 import BackgroundJpg from "@/assets/background.jpg"
 import LogoSvg from "@/assets/logo.svg"
 

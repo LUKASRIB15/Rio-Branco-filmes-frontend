@@ -1,10 +1,13 @@
 import { BrowserRouter } from "react-router";
 import { RootRoutes } from "./routes";
+import { SessionsProvider } from "./contexts/sessions";
 
 export function App() {
   return (
     <BrowserRouter>
-      <RootRoutes />
+      <SessionsProvider>
+        <RootRoutes />
+      </SessionsProvider>
     </BrowserRouter>
   )
 }
