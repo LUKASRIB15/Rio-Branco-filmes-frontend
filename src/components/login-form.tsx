@@ -70,12 +70,12 @@ export function LoginForm({
         <Field>
           <div className="flex items-center">
             <FieldLabel htmlFor="password">Senha</FieldLabel>
-            <a
-              href="#"
+            <Link
+              to="/forget-password"
               className="ml-auto text-sm underline-offset-4 hover:underline text-primary"
             >
-              Esqueci a senha?
-            </a>
+              Esqueceu a senha?
+            </Link>
           </div>
           <Input id="password" minLength={8} type="password" required {...register("password")}/>
         </Field>
