@@ -1,5 +1,5 @@
 import { api } from "@/services/axios";
-import { getUserFromStorage, setUserInStorage } from "@/storage/sessions-storage";
+import { getUserFromStorage, removeUserFromStorage, setUserInStorage } from "@/storage/sessions-storage";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { email } from "zod";
 
@@ -24,6 +24,7 @@ type SessionsContextProps = {
   userLogged: UserDTO | null
   signIn: (data: SignInRequest) => Promise<void>
   signUp: (data: SignUpRequest) => Promise<void>
+  signOut: () => Promise<void>
 }
 
 const SessionsContext = createContext({} as SessionsContextProps)
@@ -87,6 +88,16 @@ export function SessionsProvider({children}: {children: ReactNode}){
     }
   }
 
+  async function signOut(){
+    try{
+      setAccessToken(null)
+      setUserLogged(null)
+      removeUserFromStorage()
+    }catch(error){
+      throw error
+    }
+  }
+
   useEffect(()=>{
     const {token, user} = getUserFromStorage()
 
@@ -97,7 +108,7 @@ export function SessionsProvider({children}: {children: ReactNode}){
   }, [])
 
   return (
-    <SessionsContext.Provider value={{accessToken, userLogged, signIn, signUp}}>
+    <SessionsContext.Provider value={{accessToken, userLogged, signIn, signUp, signOut}}>
       {children}
     </SessionsContext.Provider>
   )
