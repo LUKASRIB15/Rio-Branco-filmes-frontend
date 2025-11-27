@@ -10,12 +10,18 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTransition } from "react"
+import { useNavigate, useSearchParams } from "react-router"
+import { Error404 } from "@/components/404"
+import { useSession } from "@/contexts/sessions"
+import { AxiosError } from "axios"
 
 const recoveryPasswordFormValidationSchema = z.object({
-  password: z.string().min(6),
-  confirmPassword: z.string().min(6)
-}).refine((data) => data.password === data.confirmPassword)
-
+  password: z.string(),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "As senhas não coincidem.",
+  path: ["confirmPassword"],
+})
 
 type RecoveryPasswordFormData = z.infer<typeof recoveryPasswordFormValidationSchema>
 
@@ -23,18 +29,44 @@ export function RecoveryPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const {recoveryPassword} = useSession()
   const [isLoading, startLoading] = useTransition()
+  const [queryParams] = useSearchParams()
+  const navigate = useNavigate()
 
-  const {handleSubmit, register, watch} = useForm<RecoveryPasswordFormData>({
+  const accessToken = queryParams.get('token')
+
+  const {handleSubmit, register, watch, formState: {errors}} = useForm<RecoveryPasswordFormData>({
     resolver: zodResolver(recoveryPasswordFormValidationSchema)
   })
 
   const isDisabledRecoveryPasswordAction = !watch("password") || !watch("confirmPassword")
 
   function handleChangePassword(data: RecoveryPasswordFormData){
-    startLoading(()=>{
-      console.log(data)
+    startLoading(async ()=>{
+      try{
+        const {password} = data
+        if(accessToken){
+          await recoveryPassword({newPassword: password, accessToken})
+          alert('Sua redefinição de senha foi realizada com sucesso! Acesse sua conta agora efetuando login.')
+          navigate('/')
+        }
+      }catch(error){
+        if(error instanceof AxiosError){
+          switch(error.status){
+            case 401:
+              alert('Você não tem permissão para efetuar troca da senha desse usuário')
+              break
+            default:
+              alert('Não foi possível redefinir a senha desse usuário. Tente novamente mais tarde!')
+          }
+        }
+      }
     })
+  }
+
+  if(!accessToken){
+    return <Error404 />
   }
 
   return (
@@ -54,6 +86,9 @@ export function RecoveryPasswordForm({
           <FieldLabel htmlFor="password">Confirmar nova senha</FieldLabel>
           <Input id="password" minLength={8} type="password" required {...register("confirmPassword")}/>
         </Field>
+        {
+          errors.confirmPassword && <p className="text-primary text-sm">{errors.confirmPassword.message}*</p>
+        }
         <Field>
           <Button type="submit" disabled={isDisabledRecoveryPasswordAction || isLoading}>Realizar alteração de senha</Button>
         </Field>

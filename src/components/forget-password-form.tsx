@@ -10,6 +10,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTransition } from "react"
+import { useSession } from "@/contexts/sessions"
+import { AxiosError } from "axios"
 
 const forgetPasswordFormValidationSchema = z.object({
   email: z.email(),
@@ -21,6 +23,7 @@ export function ForgetPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const {sendLinkToEmail} = useSession()
   const [isLoading, startLoading] = useTransition()
 
   const {handleSubmit, register, watch} = useForm<ForgetPasswordFormData>({
@@ -30,8 +33,23 @@ export function ForgetPasswordForm({
   const isDisabledForgetPasswordAction = !watch("email")
 
   function handleSendLinkToEmail(data: ForgetPasswordFormData){
-    startLoading(()=>{
-      console.log(data)
+    startLoading(async ()=>{
+      try{
+        const {email} = data
+        await sendLinkToEmail(email)
+
+        alert("Acabamos de enviar uma mensagem para você. Acesse sua caixa de email")
+      }catch(error){
+        if(error instanceof AxiosError){
+          switch(error.status){
+            case 404:
+              alert("Algo não está correto. Revise os dados informados ou crie uma conta, caso ainda não tenha.")
+              break
+            default:
+              alert("Ocorreu um erro ao tentar recuperar sua senha. Tente novamente mais tarde.")
+          }
+        }
+      }
     })
   }
 
