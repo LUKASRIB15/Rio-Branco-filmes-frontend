@@ -14,6 +14,11 @@ type SignUpRequest = {
   password: string
 }
 
+type RecoveryPasswordRequest = {
+  accessToken: string
+  newPassword: string
+}
+
 type UserDTO = {
   name: string 
   email: string
@@ -25,6 +30,8 @@ type SessionsContextProps = {
   signIn: (data: SignInRequest) => Promise<void>
   signUp: (data: SignUpRequest) => Promise<void>
   signOut: () => Promise<void>
+  sendLinkToEmail: (email:string) => Promise<void>
+  recoveryPassword: (data: RecoveryPasswordRequest) => Promise<void>
 }
 
 const SessionsContext = createContext({} as SessionsContextProps)
@@ -98,6 +105,32 @@ export function SessionsProvider({children}: {children: ReactNode}){
     }
   }
 
+  async function sendLinkToEmail(email: string){
+    try{
+      await api.post('/auth/forgot-password', {
+        email
+      })
+    }catch(error){
+      throw error
+    }
+  }
+
+  async function recoveryPassword(data: RecoveryPasswordRequest){
+    try{
+      const {accessToken, newPassword} = data
+
+      await api.post('/auth/reset-password', {
+        novaSenha: newPassword
+      }, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+    }catch(error){
+      throw error
+    }
+  }
+
   useEffect(()=>{
     const {token, user} = getUserFromStorage()
 
@@ -108,7 +141,7 @@ export function SessionsProvider({children}: {children: ReactNode}){
   }, [])
 
   return (
-    <SessionsContext.Provider value={{accessToken, userLogged, signIn, signUp, signOut}}>
+    <SessionsContext.Provider value={{accessToken, userLogged, signIn, signUp, signOut, sendLinkToEmail, recoveryPassword}}>
       {children}
     </SessionsContext.Provider>
   )

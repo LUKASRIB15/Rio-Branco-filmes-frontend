@@ -7,7 +7,7 @@ import {
   IconFileAi,
   IconFileDescription,
   IconListDetails,
-  IconSearch
+  IconSearch,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -101,7 +101,7 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Search",
+      title: "Procurar",
       url: "#",
       icon: IconSearch,
     },
