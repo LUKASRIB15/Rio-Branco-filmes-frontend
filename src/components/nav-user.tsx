@@ -1,7 +1,6 @@
 import {
   IconDotsVertical,
   IconLogout,
-  IconUserCircle,
 } from "@tabler/icons-react"
 
 import {
@@ -24,6 +23,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { useSession } from "@/contexts/sessions"
+import { Profile } from "./profile"
+import { generateAvatarNick } from "@/utils/generate-avatar-nick"
 
 export function NavUser() {
   const { userLogged, signOut } = useSession()
@@ -33,17 +34,6 @@ export function NavUser() {
     name: 'Unknown',
     email: 'unknown',
     avatar: null
-  }
-
-  function generateAvatarNick(name: string){
-    const separateNames = name.split(" ")
-
-    const firstWordOfFirstName = separateNames[0][0]
-    const firstWordOfSecondName = separateNames[1]?.[0] ?? separateNames[0][1]
-
-    const avatarNick = firstWordOfFirstName + firstWordOfSecondName
-
-    return avatarNick.toUpperCase()
   }
 
   return (
@@ -88,10 +78,7 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                Conta
-              </DropdownMenuItem>
+              <Profile/>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={signOut}>

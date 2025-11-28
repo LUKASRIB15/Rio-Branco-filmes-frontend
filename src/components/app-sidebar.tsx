@@ -1,13 +1,13 @@
 import * as React from "react"
 import LogoSvg from "@/assets/logo.svg"
 import {
-  IconCamera,
   IconChartBar,
   IconDashboard,
-  IconFileAi,
-  IconFileDescription,
   IconListDetails,
   IconSearch,
+  IconMovie,
+  IconNotebook,
+  IconDeviceTv
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -24,79 +24,26 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
+      title: "Catálogo",
+      url: "/catalog",
+      icon: IconMovie,
     },
     {
       title: "Meu Diário",
-      url: "#",
-      icon: IconListDetails,
+      url: "/diary",
+      icon: IconNotebook,
     },
     {
       title: "Filmes Para Assistir",
-      url: "#",
-      icon: IconListDetails,
+      url: "/watch-list",
+      icon: IconDeviceTv,
     },
     {
       title: "Minhas Estatísticas",
-      url: "#",
+      url: "/analytics",
       icon: IconChartBar,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
     },
   ],
   navSecondary: [
