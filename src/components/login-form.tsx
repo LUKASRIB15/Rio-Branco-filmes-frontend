@@ -80,7 +80,17 @@ export function LoginForm({
           <Input id="password" minLength={8} type="password" required {...register("password")}/>
         </Field>
         <Field>
-          <Button type="submit" disabled={isDisabledLoginAction || isLoading}>Entre</Button>
+          <Button type="submit" disabled={isDisabledLoginAction || isLoading}>
+            {
+              isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-3 border-gray-200 border-t-primary rounded-full animate-spin" />
+                </div>
+              ) : (
+                'Entre'
+              )
+            }
+          </Button>
         </Field>
         <span
           className="m-auto text-sm underline-offset-4 font-semibold"
