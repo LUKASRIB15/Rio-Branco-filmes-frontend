@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { DeleteProfile } from "./delete-profile";
+import { AxiosError } from "axios";
 
 const profileFormValidationSchema = z.object({
   name: z.string(),
@@ -23,7 +24,7 @@ type ProfileFormData = z.infer<typeof profileFormValidationSchema>
 
 export function Profile(){
   const [isLoading, startLoading] = useTransition()
-  const {userLogged} = useSession()
+  const {userLogged, updateUserAccount} = useSession()
 
   const user = userLogged ?? {
     name: 'Unknown',
@@ -40,10 +41,22 @@ export function Profile(){
 
   const isUnnecessaryEditProfile = watch('name').trim() === user.name 
 
-  function handleEditProfile(data: ProfileFormData){
-    startLoading(()=>{
-      console.log(data)
-    })
+  async function handleEditProfile(data: ProfileFormData){
+    try{
+      if(!userLogged){
+        return
+      }
+
+      await updateUserAccount({
+        name: data.name,
+        email: userLogged.email
+      })
+      
+    }catch(error){
+      if(error instanceof AxiosError){
+        alert("Ocorreu um erro ao realizar edição do seu perfil. Tente novamente mais tarde.")
+      }
+    }
   }
 
   return (
@@ -54,7 +67,7 @@ export function Profile(){
           Minha Conta
         </DropdownMenuItem>
       </DialogTrigger>
-      <DialogContent className="overflow-hidden p-0 sm:max-w-3xl">
+      <DialogContent className="overflow-hidden p-0 sm:max-w-3xl"   onOpenAutoFocus={(event) => event.preventDefault()}>
         <DialogHeader className="bg-accent/60 h-30 w-full relative">
           <Avatar className="h-25 w-25 rounded-full absolute left-1/2 -translate-x-1/2 -bottom-1/3 border border-primary">
             <AvatarFallback className="rounded-lg text-5xl">{generateAvatarNick(user.name)}</AvatarFallback>

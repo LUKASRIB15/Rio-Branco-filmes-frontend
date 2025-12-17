@@ -84,7 +84,17 @@ export function SignupForm({
           </FieldDescription>
         </Field>
         <Field>
-          <Button type="submit" disabled={isDisabledSignUpAction || isLoading}>Criar conta</Button>
+          <Button type="submit" disabled={isDisabledSignUpAction || isLoading}>
+            {
+              isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-3 border-gray-200 border-t-primary rounded-full animate-spin" />
+                </div>
+              ) : (
+                'Criar conta'
+              )
+            }
+          </Button>
         </Field>
         <span
           className="m-auto text-sm underline-offset-4 font-semibold"

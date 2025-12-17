@@ -67,7 +67,17 @@ export function ForgetPasswordForm({
           <Input id="email" type="email" placeholder="Digite seu e-mail" required {...register("email")}/>
         </Field>
         <Field>
-          <Button type="submit" disabled={isDisabledForgetPasswordAction || isLoading}>Enviar link para este e-mail</Button>
+          <Button type="submit" disabled={isDisabledForgetPasswordAction || isLoading}>
+            {
+              isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-3 border-gray-200 border-t-primary rounded-full animate-spin" />
+                </div>
+              ) : (
+                'Enviar Link para este e-mail'
+              )
+            }
+          </Button>
         </Field>
       </FieldGroup>
     </form>

@@ -90,7 +90,17 @@ export function RecoveryPasswordForm({
           errors.confirmPassword && <p className="text-primary text-sm">{errors.confirmPassword.message}*</p>
         }
         <Field>
-          <Button type="submit" disabled={isDisabledRecoveryPasswordAction || isLoading}>Realizar alteração de senha</Button>
+          <Button type="submit" disabled={isDisabledRecoveryPasswordAction || isLoading}>
+            {
+              isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-5 h-5 border-3 border-gray-200 border-t-primary rounded-full animate-spin" />
+                </div>
+              ): (
+                'Realizar alteração de senha'
+              )
+            }
+          </Button>
         </Field>
       </FieldGroup>
     </form>

@@ -19,6 +19,11 @@ type RecoveryPasswordRequest = {
   newPassword: string
 }
 
+type UpdateUserAccountRequest = {
+  name: string
+  email: string
+}
+
 type UserDTO = {
   name: string 
   email: string
@@ -32,6 +37,8 @@ type SessionsContextProps = {
   signOut: () => Promise<void>
   sendLinkToEmail: (email:string) => Promise<void>
   recoveryPassword: (data: RecoveryPasswordRequest) => Promise<void>
+  updateUserAccount: (data: UpdateUserAccountRequest) => Promise<void>
+  deleteUserAccount: () => Promise<void>
 }
 
 const SessionsContext = createContext({} as SessionsContextProps)
@@ -131,6 +138,41 @@ export function SessionsProvider({children}: {children: ReactNode}){
     }
   }
 
+  async function updateUserAccount(data: UpdateUserAccountRequest){
+    try{
+      const {name, email} = data
+      
+      await api.put('/cinefilo', {
+        nome: name,
+        email,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+
+      setUserLogged({
+        name,
+        email
+      })
+    }catch(error){
+      throw error
+    }
+  }
+
+  async function deleteUserAccount(){
+    try{
+      await api.delete('/cinefilo', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+      await signOut()
+    }catch(error){
+      throw error
+    }
+  }
+
   useEffect(()=>{
     const {token, user} = getUserFromStorage()
 
@@ -141,7 +183,17 @@ export function SessionsProvider({children}: {children: ReactNode}){
   }, [])
 
   return (
-    <SessionsContext.Provider value={{accessToken, userLogged, signIn, signUp, signOut, sendLinkToEmail, recoveryPassword}}>
+    <SessionsContext.Provider value={{
+      accessToken, 
+      userLogged, 
+      signIn, 
+      signUp, 
+      signOut, 
+      sendLinkToEmail, 
+      recoveryPassword, 
+      updateUserAccount,
+      deleteUserAccount
+    }}>
       {children}
     </SessionsContext.Provider>
   )
