@@ -14,9 +14,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useCreateCinephileAccount } from "@/hooks/use-create-cinephile-account";
-import { HttpError } from "@/shared/errors/http-error";
-import { toast } from "sonner";
-import { toastError, toastWarning } from "@/shared/helpers/toasts";
 
 const signUpFormValidationSchema = z.object({
   name: z.string(),

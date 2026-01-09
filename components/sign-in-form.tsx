@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
+import { useAuthenticateCinephileAccount } from "@/hooks/use-authenticate-cinephile-account";
 
 const signInFormValidationSchema = z.object({
   email: z.email(),
@@ -21,6 +22,7 @@ export function SignInForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [isLoading, startLoading] = useTransition();
+  const authenticateCinephileAccount = useAuthenticateCinephileAccount();
 
   const { handleSubmit, register, watch } = useForm<SignInFormData>({
     resolver: zodResolver(signInFormValidationSchema),
@@ -29,7 +31,9 @@ export function SignInForm({
   const isDisabledSignInAction = !watch("email") || !watch("password");
 
   function handleSignIn(data: SignInFormData) {
-    console.log(data);
+    startLoading(async () => {
+      await authenticateCinephileAccount.execute(data);
+    });
   }
 
   return (
