@@ -1,15 +1,14 @@
 "use server";
 
-import { CinephileDTO } from "./dto/cinephile";
 import { cookies } from "next/headers";
+import { CinephileDTO } from "./dto/cinephile";
 
-type CreateCinephileAccountRequest = {
-  name: string;
+type AuthenticateCinephileAccountRequest = {
   email: string;
   password: string;
 };
 
-type CreateCinephileAccountResponse =
+type AuthenticateCinephileAccountResponse =
   | {
       ok: false;
       error: {
@@ -21,30 +20,28 @@ type CreateCinephileAccountResponse =
       cinephile: CinephileDTO;
     };
 
-export async function createCinephileAccountAction({
-  name,
+export async function authenticateCinephileAccountAction({
   email,
   password,
-}: CreateCinephileAccountRequest): Promise<CreateCinephileAccountResponse> {
-  const response = await fetch("http://localhost:3333/cinephiles/new", {
+}: AuthenticateCinephileAccountRequest): Promise<AuthenticateCinephileAccountResponse> {
+  const response = await fetch("http://localhost:3333/cinephiles/auth", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name,
       email,
       password,
     }),
   });
 
-  if (response.status === 409) {
-    const error409 = await response.json();
+  if (response.status === 401) {
+    const error401 = await response.json();
 
     return {
       ok: false,
       error: {
-        statusCode: error409.statusCode,
+        statusCode: error401.statusCode,
       },
     };
   }
