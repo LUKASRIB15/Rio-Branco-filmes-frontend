@@ -33,7 +33,7 @@ export function proxy(request: NextRequest) {
   ) {
     const redirectUrl = request.nextUrl.clone();
 
-    redirectUrl.pathname = "/";
+    redirectUrl.pathname = "/catalog";
 
     return NextResponse.redirect(redirectUrl);
   }
