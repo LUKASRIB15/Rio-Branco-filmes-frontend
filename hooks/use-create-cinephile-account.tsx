@@ -18,7 +18,7 @@ export const useCreateCinephileAccount = () => {
           ...cinephile,
           avatarUrl: cinephile.avatar_url,
         });
-        router.push("/");
+        router.push("/catalog");
       } else {
         const { statusCode } = result.error;
 
